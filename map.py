@@ -72,11 +72,11 @@ def expand_map(img, robot_width):
     for i in range(robot_px): 
          for j in range(robot_px): 
               x=i-(robot_px-1)/2 #due to the nature of arrays in python starting from 0 we have to apply a slight shift to the points
-              y=j-(robot_px-1)/2
+              y=j-(robot_px-1)/2 
               distance = np.sqrt(x**2+y**2) #the distance of the pixel from the centre is calculated by applying pythagoras
-              if distance < robot_px/2 or distance==robot_px/2: #if the distance is less than the robot pixel width or equal to the robot width it is marked as a 1
+              if distance < robot_px/2 or distance==robot_px/2: #if the distance is less than half the robot pixel width or equal to the half robot width it is marked as a 1
                    # this means that the point lies within the circle
-                   # in this case the robot pixel width is treated as the radius
+                   # in this case half the robot pixel width is treated as the radius
                    robot_mask[i,j]=1
     			
     #plt.show(robot_mask, 0, 1, origin='lower')
