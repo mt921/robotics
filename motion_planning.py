@@ -127,12 +127,12 @@ class MotionPlanner():
         # This array stores the initial test waypoints from section 3.1 in the Report
         # These waypoints allow the robot to navigate through the environment but do not have the optimal path
 
-        # These waypoints produce an optimal path devised using a regional visibility graph in section 3.2
-        # Further details can be seen in the report on how the shortest path is derived
+        # This array stores the waypoints required to achieve an optimal path devised using a regional visibility graph in section 3.2
         waypoints = np.array([[2, -2.5], #POINT B
                               [3.9, 3.3], #POINT E
                               [7.8,  4.6]])  #POINT G
         # The final waypoints will follow an optimal path
+        # Further details can be seen in the report (section 3.2) on how the shortest path is derived
 
         waypoints = np.vstack([initial_position, waypoints, self.goal])
         pixel_goal = self.map_position(self.goal)
@@ -189,9 +189,11 @@ class MotionPlanner():
        
         # potential function
 
+        # ----------------------------
         # ANSWER FOR SECTION 4.1
         pos_force_magnitude = 1.0 #in section 4.1 we use a constant force magnitude
 
+        # ----------------------------
         # ANSWER FOR SECTION 4.2
         pos_force_magnitude = obstacle_vector /  distance_to_obstacle #in section 4.2 we update the function to be more complex
         # this update helps to meet the specific needs of our motion planning setting
@@ -217,13 +219,14 @@ class MotionPlanner():
         force_direction = obstacle_vector / distance_to_obstacle   # normalised vector (for direction)
        
         # potential function
-
+        # ----------------------------
         # ANSWER TO SECTION 4.1
         force_magnitude = 1.0/distance_to_obstacle  # in section 4.1 we initially implement the force magnitude of the repulsive potential as inversely proportional to distance
         # as distance from the obstacle decreases the force magnitude will increase, which is useful for avoiding collisions.
-
+        # ----------------------------
         # ANSWER TO SECTION 4.2
-        force_magnitude = 1.0/np.square(distance_to_obstacle)  # in section 4.2 we apply a more complex function to help meet the needs of our specific context (i.e. task)
+        force_magnitude = 1.0/np.square(distance_to_obstacle)  # in section 4.2 we apply a more complex function to help meet the needs of our specific context
+        # further rationale for selecting these specific functions is included in section 4.2 of the report
 
 
         # tuning parameter
@@ -273,18 +276,17 @@ class MotionPlanner():
             # Remember that indexing a 2D array is [row, column], which is [y, x]!
             # You might have to make sure the pixel location is an integer so it can be used to index self.pixel_map
            
-           
-            for i in range(len(pixel_points)):
-                if self.pixel_map[int(pixel_points[i][1]),int(pixel_points[i][0])]:
-                    rejected[i] = 1
+            for i in range(len(pixel_points)): #we iterate through all the pixel points which are created by mapping our original world coordinates to pixels
+                if self.pixel_map[int(pixel_points[i][1]),int(pixel_points[i][0])]: #if a pixel_point has a value of 1 there is an obstacle
+                    rejected[i] = 1 #if an obstacle is identified we flag the point as rejected
                    
                    
-            new_accepted_points = pixel_points[np.argwhere(rejected == 0)].reshape((-1, 2))
+            new_accepted_points = pixel_points[np.argwhere(rejected == 0)].reshape((-1, 2)) #the flags are used to assign new accepted and rejected points
             new_rejected_points = pixel_points[np.argwhere(rejected == 1)].reshape((-1, 2))
             # keep an array of generated points that are accepted
-            accepted_points = np.vstack((accepted_points, new_accepted_points))
+            accepted_points = np.vstack((accepted_points, new_accepted_points)) #original accepted_points array updated
             # keep an array of generated points that are rejected (for visualisation)
-            rejected_points = np.vstack((rejected_points, new_rejected_points))
+            rejected_points = np.vstack((rejected_points, new_rejected_points)) #original rejected_points array updated
             N_accepted = accepted_points.shape[0] - 1    
        
         # throw away that first 'empty' point we added for initialisation
@@ -312,7 +314,8 @@ class MotionPlanner():
     def create_graph(self, points):
         ############################################################### TASK E i
         # Choose your minimum and maximum distances to produce a suitable graph
-        mindist = 1.0
+        #the process for tuning mindist and maxdist is included in section 5.3 of the report
+        mindist = 1.0 #the tuning of this minimum distance ensures edges are properly connected 
         maxdist = 5.0
        
         # Calculate a distance matrix between every node to every other node
