@@ -195,8 +195,7 @@ class MotionPlanner():
 
         # ----------------------------
         # ANSWER FOR SECTION 4.2
-        pos_force_magnitude = obstacle_vector /  distance_to_obstacle #in section 4.2 we update the function to be more complex
-        # this update helps to meet the specific needs of our motion planning setting
+        pos_force_magnitude = distance_to_goal #positive force is proportional to distance to goal
 
         # tuning parameter
         K_att = 1    # after tuning we find this to be the best result to ultimately reach the goal
