@@ -13,7 +13,7 @@ import pandas as pd
 import numpy as np
 import rospy
 import sys
-#test
+
 deniro_position = np.array([0, -6.0])
 deniro_heading = 0.0
 deniro_linear_vel = 0.0
@@ -367,13 +367,13 @@ class MotionPlanner():
         return False    # if it's got through every pixel as hasn't returned yet, return False
    
     def dijkstra(self, graph, edges):
-        ############################################################### TASK F
+        ###################################### TASK F
         goal_node = goal
         nodes = list(graph.keys())
        
         # Create a dataframe of unvisited nodes
-        # Initialise each cost to a very high number
-        initial_cost = 1000000  # Set this to a suitable value
+        
+        initial_cost = 1000000  # Initialise each cost at a very high number
        
         unvisited = pd.DataFrame({'Node': nodes, 'Cost': [initial_cost for node in nodes], 'Previous': ['' for node in nodes]})
         unvisited.set_index('Node', inplace=True)
@@ -394,7 +394,7 @@ class MotionPlanner():
         print('--------------------------------')
         print('Running Dijkstra')
        
-        # Dijkstra's algorithm!
+        # Dijkstra's algorithm
         # Keep running until we get to the goal node
         while str(goal_node) not in visited.index.values:
            
@@ -414,12 +414,7 @@ class MotionPlanner():
                 if next_node_name not in visited.index.values:  # if we haven't visited this node before
                    
                     # update this to calculate the cost of going from the initial node to the next node via the current node
-                    next_cost_trial = current_cost + edge_cost
-                   
-                   
-                   
-                   
-                      # set this to calculate the cost of going from the initial node to the next node via the current node
+                    next_cost_trial = current_cost + edge_cost # set this to calculate the cost of going from the initial node to the next node via the current node
                     next_cost = unvisited.loc[[next_node_name], ['Cost']].values[0] # the previous best cost we've seen going to the next node
                    
                     # if it costs less to go the next node from the current node, update then next node's cost and the path to get there
